@@ -22,24 +22,6 @@ bash install.sh --local --all
 
 `docs/verification.md`의 체크리스트를 따릅니다.
 
-## 통합 파일 생성
-
-`rules/` 수정 후 통합 파일 재생성:
-
-```bash
-python3 -c "
-import json
-ctrl = json.load(open('rules/ctrl-keys.json'))
-meta = json.load(open('rules/meta-keys.json'))
-combined = {
-    'title': 'Korean Shortcuts - 한글 상태 단축키 우회',
-    'maintainers': ['pereng11'],
-    'rules': ctrl['rules'] + meta['rules']
-}
-json.dump(combined, open('korean-shortcuts.json', 'w'), indent=2, ensure_ascii=False)
-"
-```
-
 ## 커밋
 
 conventional commits 형식:

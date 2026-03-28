@@ -58,49 +58,7 @@
 [ ] Ctrl+B, d → detach
 ```
 
-## Phase 3: 단독 키 (Claude Code / vim / tmux)
-
-`--with-standalone` 설치 후, 한글 입력 모드 상태에서:
-
-### Claude Code
-
-```
-[ ] Confirmation 다이얼로그에서 y → Yes
-[ ] Confirmation 다이얼로그에서 n → No
-[ ] Transcript (Ctrl+O)에서 q → 닫힘
-[ ] Message Selector에서 j → 아래
-[ ] Message Selector에서 k → 위로
-[ ] Settings에서 / → 검색
-```
-
-### vim/neovim
-
-```
-[ ] j → 아래 이동
-[ ] k → 위 이동
-[ ] h → 왼쪽 이동
-[ ] l → 오른쪽 이동
-[ ] i → insert mode
-[ ] v → visual mode
-[ ] d → delete
-[ ] y → yank
-[ ] p → paste
-[ ] / → search
-[ ] G (Shift+g) → 파일 끝
-[ ] gg → 파일 처음
-[ ] dd → 줄 삭제
-[ ] :wq → 저장 종료 (: 가 정상 동작하는지)
-```
-
-### tmux copy mode
-
-```
-[ ] j/k → 이동
-[ ] / → 검색
-[ ] q → copy mode 종료
-```
-
-## Phase 4: 부작용
+## Phase 3: 부작용
 
 ```
 [한글 입력 정상성]
@@ -121,7 +79,7 @@
 [ ] Ctrl+Shift+키 (예: Ctrl+Shift+T) → 정상 동작
 ```
 
-## Phase 5: 입력기 호환성
+## Phase 4: 입력기 호환성
 
 ```
 [ ] Apple 기본 한글 2벌식
@@ -130,13 +88,12 @@
 [ ] 구름(Gureum) 입력기
 ```
 
-## Phase 6: 설치/제거 스크립트
+## Phase 5: 설치/제거 스크립트
 
 ```
 [install.sh]
 [ ] Karabiner 미설치 → 에러 메시지 + 설치 안내
 [ ] 기본 설치 → Ctrl+키 규칙만 활성화
-[ ] --with-standalone → 단독 키 규칙 추가 활성화
 [ ] --with-meta → Cmd+키 규칙 추가 활성화
 [ ] --all → 전체 활성화
 [ ] 기존 Karabiner 설정 보존 (다른 규칙 영향 없음)
@@ -150,7 +107,7 @@
 [ ] 백업 정리 옵션
 ```
 
-## Phase 7: 장기 안정성
+## Phase 6: 장기 안정성
 
 ```
 [ ] 8시간+ 연속 사용 후 키 입력 지연 없음
