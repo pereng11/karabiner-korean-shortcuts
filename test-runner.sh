@@ -118,15 +118,10 @@ run_test() {
     echo -e "  │  ${DIM}▼ 연습 구간 — 자유롭게 테스트하세요 (Enter → 결과 입력)${NC}"
     echo -e "  └──────────────────────────────────────────────"
 
-    # 연습 구간: readline 모드로 자유롭게 키 입력 + 신호 트랩
-    local practice_signal=""
-    trap 'practice_signal="SIGINT"; echo -e "\n  ${GREEN}(Ctrl+C 감지됨)${NC}"' INT
-    trap 'practice_signal="SIGTSTP"; echo -e "\n  ${GREEN}(Ctrl+Z 감지됨)${NC}"' TSTP
-
-    echo -ne "  ${DIM}>${NC} "
-    read -e -r _practice_input 2>/dev/null || echo -e "\n  ${GREEN}(Ctrl+D 감지됨)${NC}"
-
-    trap - INT TSTP
+    # 연습 구간: 실제 interactive shell을 띄워서 자유롭게 테스트
+    # Ctrl+D 또는 exit로 빠져나오면 결과 입력으로 넘어감
+    env PS1="  practice> " bash --norc --noprofile -i 2>/dev/null
+    echo ""
 
     while true; do
         echo -ne "  결과? [${GREEN}p${NC}]ass / [${RED}f${NC}]ail / [${YELLOW}s${NC}]kip: "
