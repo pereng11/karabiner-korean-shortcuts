@@ -36,9 +36,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/ellispark/karabiner-korean-s
 # 기본: Ctrl+키 규칙만 설치
 bash install.sh
 
-# 터미널에서 단독 키도 영문으로 (y/n/q/j/k 등 - vim, tmux, Claude Code용)
-bash install.sh --with-standalone
-
 # Cmd+키 규칙도 추가
 bash install.sh --with-meta
 
@@ -64,30 +61,7 @@ bash install.sh --all
 | `Ctrl+K` | 커서 뒤 삭제 |
 | ... | Ctrl+A~Z 전체 30개 |
 
-### 2. 터미널 단독 키 매핑 (선택)
-
-`--with-standalone` 옵션으로 설치. **터미널 앱에서만** 적용됩니다.
-
-한글 상태에서 vim, tmux, Claude Code 등의 단독 키 단축키가 동작합니다:
-
-| 입력 (한글 상태) | 전송 | 용도 |
-|-----------------|------|------|
-| ㅛ | y | 확인 (yes) |
-| ㅜ | n | 거부 (no) |
-| ㅂ | q | 닫기 (quit) |
-| ㅓ | j | 아래로 이동 |
-| ㅏ | k | 위로 이동 |
-| ㅑ | i | 삽입/설치 |
-| ㄱ | r | 재시도 |
-
-Shift 조합 (`G`, `H`, `L` 등)과 특수 키 (`/`, `.`, `;` 등) 포함, 총 40개.
-
-지원하는 터미널: Terminal.app, iTerm2, Alacritty, Kitty, WezTerm, Warp, Hyper
-
-> **주의**: 이 규칙을 활성화하면 터미널에서 한글 입력 시 해당 키가 영문으로 전송됩니다.
-> 터미널에서 한글을 입력할 때는 이 규칙을 비활성화하거나, Karabiner 메뉴바에서 프로필을 전환하세요.
-
-### 3. Cmd+키 한글 우회 (선택)
+### 2. Cmd+키 한글 우회 (선택)
 
 `--with-meta` 옵션으로 설치. macOS에서 Cmd+키는 대부분 한글 상태에서도 동작하지만, 일부 앱에서 문제가 발생할 경우 사용합니다.
 
@@ -137,14 +111,6 @@ Karabiner-Elements는 macOS 커널 레벨에서 키 이벤트를 가로챕니다
 
 입력 소스 복원이 실패한 경우입니다. Karabiner-EventViewer를 열어 현재 입력 소스 ID를 확인하고, [이슈](https://github.com/ellispark/karabiner-korean-shortcuts/issues)에 보고해주세요.
 
-### 특정 터미널에서만 단독 키가 안 돼요
-
-`--with-standalone` 규칙은 특정 터미널 앱에서만 동작합니다. 사용하는 터미널이 목록에 없다면 [이슈](https://github.com/ellispark/karabiner-korean-shortcuts/issues)에 터미널 이름과 bundle identifier를 알려주세요.
-
-Bundle identifier 확인법:
-```bash
-osascript -e 'id of app "터미널앱이름"'
-```
 
 ## 라이선스
 

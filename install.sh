@@ -50,21 +50,18 @@ fi
 
 # ── 옵션 파싱 ────────────────────────────────────────────────────
 
-INSTALL_STANDALONE=false
 INSTALL_META=false
 LOCAL_MODE=false
 
 for arg in "$@"; do
     case "$arg" in
-        --with-standalone) INSTALL_STANDALONE=true ;;
         --with-meta)       INSTALL_META=true ;;
-        --all)             INSTALL_STANDALONE=true; INSTALL_META=true ;;
+        --all)             INSTALL_META=true ;;
         --local)           LOCAL_MODE=true ;;
         --help|-h)
             echo "사용법: install.sh [옵션]"
             echo ""
             echo "옵션:"
-            echo "  --with-standalone  터미널 단독 키 규칙 활성화 (y/n/q/j/k 등)"
             echo "  --with-meta        Cmd+키 규칙 활성화"
             echo "  --all              모든 규칙 활성화"
             echo "  --local            로컬 파일 사용 (개발용)"
@@ -101,11 +98,6 @@ copy_rule() {
 
 copy_rule "ctrl-keys.json"
 ok "Ctrl+키 규칙 파일 설치"
-
-if [ "$INSTALL_STANDALONE" = true ]; then
-    copy_rule "standalone-keys.json"
-    ok "단독 키 규칙 파일 설치"
-fi
 
 if [ "$INSTALL_META" = true ]; then
     copy_rule "meta-keys.json"
@@ -154,10 +146,6 @@ activate_rule() {
 
 activate_rule "${RULE_PREFIX}-ctrl-keys.json"
 
-if [ "$INSTALL_STANDALONE" = true ]; then
-    activate_rule "${RULE_PREFIX}-standalone-keys.json"
-fi
-
 if [ "$INSTALL_META" = true ]; then
     activate_rule "${RULE_PREFIX}-meta-keys.json"
 fi
@@ -171,19 +159,10 @@ echo -e "${GREEN}설치 완료!${NC} Karabiner가 자동으로 규칙을 로드�
 echo ""
 echo "설치된 규칙:"
 echo "  ✓ Ctrl+키 한글 우회 (Ctrl+A~Z, Ctrl+[, Ctrl+/ 등)"
-if [ "$INSTALL_STANDALONE" = true ]; then
-    echo "  ✓ 터미널 단독 키 매핑 (y/n/q/j/k 등 → 터미널에서만 영문)"
-fi
 if [ "$INSTALL_META" = true ]; then
     echo "  ✓ Cmd+키 한글 우회"
 fi
 echo ""
-
-if [ "$INSTALL_STANDALONE" = false ]; then
-    echo -e "${YELLOW}팁:${NC} 터미널에서 y/n/q/j/k 등도 한글 상태로 쓰려면:"
-    echo "  bash install.sh --with-standalone"
-    echo ""
-fi
 
 # 최초 설치 시 권한 안내
 if ! pgrep -q "karabiner"; then
