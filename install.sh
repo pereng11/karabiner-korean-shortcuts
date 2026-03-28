@@ -133,16 +133,21 @@ activate_rule() {
     local config="$KARABINER_CONFIG/karabiner.json"
     local tmp="/tmp/karabiner-korean-tmp-$$.json"
 
-    # 기존 Korean Shortcuts 규칙 제거
-    jq --arg id "$IDENTIFIER" '
-        .profiles[0].complex_modifications.rules |=
-            [.[] | select(.description | startswith($id) | not)]
-    ' "$config" > "$tmp"
+    # complex_modifications 구조가 없으면 생성
+    jq '
+        .profiles[0].complex_modifications //= {} |
+        .profiles[0].complex_modifications.rules //= []
+    ' "$config" > "$tmp" && mv "$tmp" "$config"
 
-    # 새 규칙 추가
-    jq --argjson rules "$rules" '
-        .profiles[0].complex_modifications.rules += $rules
-    ' "$tmp" > "$config"
+    # 이 파일의 규칙 description 목록 추출
+    local desc_filter
+    desc_filter=$(echo "$rules" | jq '[.[].description]')
+
+    # 동일 description 규칙만 제거 후 새 규칙 추가
+    jq --argjson descs "$desc_filter" --argjson rules "$rules" '
+        .profiles[0].complex_modifications.rules |=
+            ([.[] | select(.description as $d | $descs | index($d) | not)] + $rules)
+    ' "$config" > "$tmp" && mv "$tmp" "$config"
 
     rm -f "$tmp"
 }
