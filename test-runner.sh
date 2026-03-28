@@ -42,7 +42,7 @@ collect_env() {
     fi
 
     KARABINER_RUNNING="no"
-    if pgrep -q "karabiner_grabber" 2>/dev/null; then
+    if pgrep -q "karabiner" 2>/dev/null; then
         KARABINER_RUNNING="yes"
     fi
 

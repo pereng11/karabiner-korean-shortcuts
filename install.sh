@@ -186,7 +186,7 @@ if [ "$INSTALL_STANDALONE" = false ]; then
 fi
 
 # 최초 설치 시 권한 안내
-if ! pgrep -q "karabiner_grabber"; then
+if ! pgrep -q "karabiner"; then
     warn "Karabiner가 실행 중이 아닙니다."
     echo "  1. Karabiner-Elements 앱을 실행하세요"
     echo "  2. 시스템 설정 > 개인정보 보호 및 보안 > 입력 모니터링에서 허용하세요"
