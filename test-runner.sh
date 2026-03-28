@@ -119,7 +119,7 @@ run_test() {
     echo -e "  └──────────────────────────────────────────────"
 
     # 연습 구간: Enter가 눌릴 때까지 자유롭게 키 입력 가능
-    read -r -s
+    read -r
 
     while true; do
         echo -ne "  결과? [${GREEN}p${NC}]ass / [${RED}f${NC}]ail / [${YELLOW}s${NC}]kip: "
