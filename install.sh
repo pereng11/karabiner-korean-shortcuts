@@ -4,7 +4,7 @@ set -euo pipefail
 # Korean Shortcuts for Karabiner-Elements
 # 한글 상태에서 키보드 단축키가 정상 동작하도록 하는 Karabiner 규칙 설치 스크립트
 
-REPO_URL="https://raw.githubusercontent.com/ellispark/karabiner-korean-shortcuts/main"
+REPO_URL="https://raw.githubusercontent.com/pereng11/karabiner-korean-shortcuts/main"
 KARABINER_CONFIG="$HOME/.config/karabiner"
 KARABINER_ASSETS="$KARABINER_CONFIG/assets/complex_modifications"
 RULE_PREFIX="korean-shortcuts"

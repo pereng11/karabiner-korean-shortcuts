@@ -25,7 +25,7 @@ brew install --cask karabiner-elements
 ## 설치
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ellispark/karabiner-korean-shortcuts/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/pereng11/karabiner-korean-shortcuts/main/install.sh)
 ```
 
 끝. Karabiner가 자동으로 규칙을 로드합니다.
@@ -68,7 +68,7 @@ bash install.sh --all
 ## 제거
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ellispark/karabiner-korean-shortcuts/main/uninstall.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/pereng11/karabiner-korean-shortcuts/main/uninstall.sh)
 ```
 
 또는 로컬에서:
@@ -109,7 +109,7 @@ Karabiner-Elements는 macOS 커널 레벨에서 키 이벤트를 가로챕니다
 
 ### Ctrl+키 후 한글이 아닌 영문으로 입력돼요
 
-입력 소스 복원이 실패한 경우입니다. Karabiner-EventViewer를 열어 현재 입력 소스 ID를 확인하고, [이슈](https://github.com/ellispark/karabiner-korean-shortcuts/issues)에 보고해주세요.
+입력 소스 복원이 실패한 경우입니다. Karabiner-EventViewer를 열어 현재 입력 소스 ID를 확인하고, [이슈](https://github.com/pereng11/karabiner-korean-shortcuts/issues)에 보고해주세요.
 
 
 ## 라이선스

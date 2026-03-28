@@ -14,19 +14,9 @@ bash install.sh --local --all
 | 파일 | 내용 |
 |------|------|
 | `ctrl-keys.json` | Ctrl+키 한글 우회 |
-| `standalone-keys.json` | 터미널 단독 키 매핑 |
 | `meta-keys.json` | Cmd+키 한글 우회 |
 
 수정 후 `install.sh --local`로 재설치하면 Karabiner가 자동 리로드합니다.
-
-## 터미널 추가
-
-`standalone-keys.json`의 `frontmost_application_if.bundle_identifiers`에 터미널 bundle ID를 추가합니다.
-
-Bundle ID 확인:
-```bash
-osascript -e 'id of app "앱이름"'
-```
 
 ## 테스트
 
@@ -40,12 +30,11 @@ osascript -e 'id of app "앱이름"'
 python3 -c "
 import json
 ctrl = json.load(open('rules/ctrl-keys.json'))
-standalone = json.load(open('rules/standalone-keys.json'))
 meta = json.load(open('rules/meta-keys.json'))
 combined = {
     'title': 'Korean Shortcuts - 한글 상태 단축키 우회',
-    'maintainers': ['ellispark'],
-    'rules': ctrl['rules'] + standalone['rules'] + meta['rules']
+    'maintainers': ['pereng11'],
+    'rules': ctrl['rules'] + meta['rules']
 }
 json.dump(combined, open('korean-shortcuts.json', 'w'), indent=2, ensure_ascii=False)
 "
