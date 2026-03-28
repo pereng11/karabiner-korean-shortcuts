@@ -118,9 +118,9 @@ run_test() {
     echo -e "  │  ${DIM}▼ 연습 구간 — 자유롭게 테스트하세요 (Enter → 결과 입력)${NC}"
     echo -e "  └──────────────────────────────────────────────"
 
-    # 연습 구간: 실제 interactive shell을 띄워서 자유롭게 테스트
+    # 연습 구간: 유저의 기본 쉘을 interactive로 띄움
     # Ctrl+D 또는 exit로 빠져나오면 결과 입력으로 넘어감
-    env PS1="  practice> " bash --norc --noprofile -i 2>/dev/null
+    PROMPT="  practice> " PS1="  practice> " "$SHELL" --no-rcs -i </dev/tty
     echo ""
 
     while true; do
