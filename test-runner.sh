@@ -72,8 +72,8 @@ header() {
     echo -e "${BOLD}║${NC}  Korean Shortcuts 검증 테스트 (v$VERSION)          ${BOLD}║${NC}"
     echo -e "${BOLD}║${NC}  ${YELLOW}한글 입력 상태를 유지하세요${NC}                     ${BOLD}║${NC}"
     echo -e "${BOLD}╠══════════════════════════════════════════════════╣${NC}"
-    echo -e "${BOLD}║${NC}  ${DIM}각 테스트는 [연습 구간] → [결과 입력] 순서입니다${NC} ${BOLD}║${NC}"
-    echo -e "${BOLD}║${NC}  ${DIM}연습 구간에서 자유롭게 테스트 후 Enter → 결과 입력${NC}${BOLD}║${NC}"
+    echo -e "${BOLD}║${NC}  ${DIM}각 테스트: [연습 구간] → Ctrl+D → [결과 입력]${NC}    ${BOLD}║${NC}"
+    echo -e "${BOLD}║${NC}  ${DIM}연습 구간 = 진짜 쉘. 자유롭게 명령 실행 가능${NC}     ${BOLD}║${NC}"
     echo -e "${BOLD}╚══════════════════════════════════════════════════╝${NC}"
     echo ""
 }
@@ -115,12 +115,13 @@ run_test() {
     step=$((step + 1))
     echo -e "  │  ${BLUE}${step}.${NC} 확인: $expected"
     echo -e "  │"
-    echo -e "  │  ${DIM}▼ 연습 구간 — 자유롭게 테스트하세요 (Enter → 결과 입력)${NC}"
+    echo -e "  │  ${DIM}▼ 연습 구간 — 자유롭게 테스트하세요${NC}"
+    echo -e "  │  ${DIM}  Ctrl+D = 결과 입력으로 이동${NC}"
     echo -e "  └──────────────────────────────────────────────"
 
     # 연습 구간: 유저의 기본 쉘을 interactive로 띄움
-    # Ctrl+D 또는 exit로 빠져나오면 결과 입력으로 넘어감
-    PROMPT="  practice> " PS1="  practice> " "$SHELL" --no-rcs -i </dev/tty
+    # Ctrl+D (EOF) 로 빠져나오면 결과 입력으로 넘어감
+    PROMPT="practice> " PS1="practice> " "$SHELL" --no-rcs -i </dev/tty
     echo ""
 
     while true; do
