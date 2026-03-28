@@ -71,6 +71,9 @@ header() {
     echo -e "${BOLD}╔══════════════════════════════════════════════════╗${NC}"
     echo -e "${BOLD}║${NC}  Korean Shortcuts 검증 테스트 (v$VERSION)          ${BOLD}║${NC}"
     echo -e "${BOLD}║${NC}  ${YELLOW}한글 입력 상태를 유지하세요${NC}                     ${BOLD}║${NC}"
+    echo -e "${BOLD}╠══════════════════════════════════════════════════╣${NC}"
+    echo -e "${BOLD}║${NC}  ${DIM}각 테스트는 [연습 구간] → [결과 입력] 순서입니다${NC} ${BOLD}║${NC}"
+    echo -e "${BOLD}║${NC}  ${DIM}연습 구간에서 자유롭게 테스트 후 Enter → 결과 입력${NC}${BOLD}║${NC}"
     echo -e "${BOLD}╚══════════════════════════════════════════════════╝${NC}"
     echo ""
 }
@@ -100,14 +103,23 @@ run_test() {
 
     TOTAL_COUNT=$((TOTAL_COUNT + 1))
 
-    echo -e "  ${DIM}($phase_num/$phase_total)${NC} ${BOLD}$test_name${NC}"
-    echo ""
+    echo -e "  ┌──────────────────────────────────────────────"
+    echo -e "  │ ${DIM}($phase_num/$phase_total)${NC} ${BOLD}$test_name${NC}"
+    echo -e "  │"
+    local step=1
     if [ -n "$preparation" ]; then
-        echo -e "  ${BLUE}준비:${NC} $preparation"
+        echo -e "  │  ${BLUE}${step}.${NC} $preparation"
+        step=$((step + 1))
     fi
-    echo -e "  ${BLUE}동작:${NC} $action"
-    echo -e "  ${BLUE}기대:${NC} $expected"
-    echo ""
+    echo -e "  │  ${BLUE}${step}.${NC} $action"
+    step=$((step + 1))
+    echo -e "  │  ${BLUE}${step}.${NC} 확인: $expected"
+    echo -e "  │"
+    echo -e "  │  ${DIM}▼ 연습 구간 — 자유롭게 테스트하세요 (Enter → 결과 입력)${NC}"
+    echo -e "  └──────────────────────────────────────────────"
+
+    # 연습 구간: Enter가 눌릴 때까지 자유롭게 키 입력 가능
+    read -r -s
 
     while true; do
         echo -ne "  결과? [${GREEN}p${NC}]ass / [${RED}f${NC}]ail / [${YELLOW}s${NC}]kip: "
@@ -144,260 +156,264 @@ run_test() {
     echo ""
 }
 
-# ── 테스트 ���이스 정의 ───────────────────────────────────────────
+
+# -- Phase definitions -------------------------------------------------
 
 run_phase_1() {
     local total=12
-    phase_header "Phase 1" "Ctrl+키 단축키"
+    phase_header "Phase 1" "Ctrl+key"
 
-    run_test "Ctrl+C 인터럽트" \
-        "터미널에서 sleep 100 실행" \
-        "한글 상태에서 Ctrl+C" \
-        "프로세스가 중단되고 새 프롬프트가 뜸" 1 $total
+    run_test "Ctrl+C interrupt" \
+        "sleep 100 Enter" \
+        "Ctrl+C" \
+        "process killed, new prompt" 1 $total
 
-    run_test "Ctrl+W 단어 삭제" \
-        "echo hello world test 타이핑 (엔터 X)" \
-        "한글 상태에서 Ctrl+W" \
-        "마지막 단어 'test'가 삭제됨" 2 $total
+    run_test "Ctrl+W word delete" \
+        "type: echo hello world test (no Enter)" \
+        "Ctrl+W" \
+        "last word 'test' deleted" 2 $total
 
-    run_test "Ctrl+A 줄 맨 앞 이동" \
-        "echo hello world 타이핑 (엔터 X)" \
-        "한글 상태에서 Ctrl+A" \
-        "커서가 줄 맨 앞(echo 앞)으로 이동" 3 $total
+    run_test "Ctrl+A line start" \
+        "type: echo hello world (no Enter)" \
+        "Ctrl+A" \
+        "cursor moves to start of line" 3 $total
 
-    run_test "Ctrl+E 줄 맨 뒤 이동" \
-        "Ctrl+A로 맨 앞 이동한 상태에서" \
-        "한글 상태에서 Ctrl+E" \
-        "커서가 줄 맨 뒤로 이동" 4 $total
+    run_test "Ctrl+E line end" \
+        "cursor at start after Ctrl+A" \
+        "Ctrl+E" \
+        "cursor moves to end of line" 4 $total
 
-    run_test "Ctrl+U 줄 전체 삭제" \
-        "echo hello world 타이핑 (엔터 X)" \
-        "한글 상태에서 Ctrl+U" \
-        "줄 전체가 삭제됨" 5 $total
+    run_test "Ctrl+U kill line" \
+        "type anything (no Enter)" \
+        "Ctrl+U" \
+        "entire line deleted" 5 $total
 
-    run_test "Ctrl+K 커서 뒤 삭제" \
-        "echo hello world 타이핑 후 Ctrl+A로 맨 앞 이동" \
-        "한글 상태에서 Ctrl+K" \
-        "커서 뒤의 모든 텍스트가 삭제됨" 6 $total
+    run_test "Ctrl+K kill after cursor" \
+        "type: echo hello world, then Ctrl+A" \
+        "Ctrl+K" \
+        "text after cursor deleted" 6 $total
 
-    run_test "Ctrl+L 화면 클리어" \
+    run_test "Ctrl+L clear screen" \
         "" \
-        "한글 상태에서 Ctrl+L" \
-        "터미널 화면이 클리어됨" 7 $total
+        "Ctrl+L" \
+        "terminal screen cleared" 7 $total
 
-    run_test "Ctrl+R 히스토리 검색" \
+    run_test "Ctrl+R history search" \
         "" \
-        "한글 상태에서 Ctrl+R" \
-        "역방향 검색 프롬프트 또는 fzf 검색 UI가 뜸" 8 $total
+        "Ctrl+R (Ctrl+C to exit)" \
+        "reverse search prompt or fzf UI appears" 8 $total
 
-    run_test "Ctrl+D EOF 전송" \
-        "cat 명령어 실행 (입력 대기 상태)" \
-        "한글 상태에서 Ctrl+D" \
-        "cat이 종료됨 (EOF 수신)" 9 $total
+    run_test "Ctrl+D EOF" \
+        "type: cat Enter (waiting for input)" \
+        "Ctrl+D" \
+        "cat exits (EOF received)" 9 $total
 
-    run_test "Ctrl+Z 프로세스 일시중지" \
-        "sleep 100 실행" \
-        "한글 상태에서 Ctrl+Z" \
-        "[1]+ Stopped 메시지 출력" 10 $total
+    run_test "Ctrl+Z suspend" \
+        "type: sleep 100 Enter" \
+        "Ctrl+Z" \
+        "[1]+ Stopped message" 10 $total
 
-    run_test "Ctrl+[ ESC 동작" \
+    run_test "Ctrl+[ ESC" \
         "" \
-        "한글 상태에서 Ctrl+[" \
-        "ESC와 동일하게 동작 (앱에 따라 다름)" 11 $total
+        "Ctrl+[" \
+        "acts as ESC" 11 $total
 
-    run_test "Ctrl+Shift+키 조합" \
+    run_test "Ctrl+Shift+key combo" \
         "" \
-        "한글 상태에서 Ctrl+Shift+T (앱에 따라)" \
-        "Shift가 포함된 Ctrl 조합도 정상 동작" 12 $total
+        "Ctrl+Shift+any letter" \
+        "shift modifier preserved" 12 $total
 }
 
 run_phase_2() {
     local total=10
-    phase_header "Phase 2" "단독 키 — 기본 알파벳"
+    phase_header "Phase 2" "Standalone keys (alphabet)"
 
-    echo -e "  ${YELLOW}이 Phase는 --with-standalone 설치 필요${NC}"
-    echo -e "  ${DIM}터미널 앱에서만 동작합니다.${NC}"
+    echo -e "  ${YELLOW}Requires --with-standalone install${NC}"
+    echo -e "  ${DIM}Terminal apps only. Use less/vim in practice zone.${NC}"
     echo ""
 
-    run_test "y → yes (확인)" \
-        "Claude Code 또는 TUI 앱에서 확인 다이얼로그 띄우기" \
-        "한글 상태에서 y (ㅛ 위치) 누르기" \
-        "Yes가 선택됨 (ㅛ가 입력되지 않음)" 1 $total
+    run_test "y -> yes" \
+        "" \
+        "press y (hangul position) in TUI" \
+        "y sent, not hangul char" 1 $total
 
-    run_test "n → no (거부)" \
-        "Claude Code 또는 TUI 앱에서 확인 다이얼로그 띄우기" \
-        "한글 상태에서 n (ㅜ 위치) 누르기" \
-        "No가 선��됨" 2 $total
+    run_test "n -> no" \
+        "" \
+        "press n (hangul position) in TUI" \
+        "n sent, not hangul char" 2 $total
 
-    run_test "q → quit (닫기)" \
-        "Claude Code에서 Ctrl+O로 Transcript 열기" \
-        "한글 상태에서 q (ㅂ 위치) 누르기" \
-        "Transcript가 닫힘" 3 $total
+    run_test "q -> quit" \
+        "open: less README.md" \
+        "press q (hangul position)" \
+        "less exits" 3 $total
 
-    run_test "j → 아래 이동" \
-        "vim, less, ��는 TUI 앱에서 리스트 화면" \
-        "한글 상태에서 j (ㅓ 위치) 누르기" \
-        "아래로 이동" 4 $total
+    run_test "j -> down" \
+        "open: less README.md or vim" \
+        "press j (hangul position)" \
+        "scroll/move down" 4 $total
 
-    run_test "k → 위 이동" \
-        "vim, less, 또는 TUI 앱에서 리스트 화면" \
-        "한글 상태에서 k (ㅏ 위치) 누르기" \
-        "위로 이동" 5 $total
+    run_test "k -> up" \
+        "in less or vim" \
+        "press k (hangul position)" \
+        "scroll/move up" 5 $total
 
-    run_test "i → insert" \
-        "vim에서 normal mode" \
-        "한글 상태에서 i (ㅑ 위치) 누르기" \
-        "insert mode 진입" 6 $total
+    run_test "i -> insert (vim)" \
+        "open: vim /tmp/test-kr.txt" \
+        "press i (hangul position)" \
+        "enter insert mode (-- INSERT --)" 6 $total
 
-    run_test "h → 왼쪽 이동" \
-        "vim에서 normal mode" \
-        "한글 상태에서 h (ㅗ 위치) 누르기" \
-        "커서가 왼쪽으로 이동" 7 $total
+    run_test "h -> left (vim)" \
+        "vim normal mode (ESC first)" \
+        "press h (hangul position)" \
+        "cursor moves left" 7 $total
 
-    run_test "l → 오른쪽 이동" \
-        "vim에서 normal mode" \
-        "한글 상태에서 l (ㅣ 위치) 누르기" \
-        "커서가 오른쪽으로 이동" 8 $total
+    run_test "l -> right (vim)" \
+        "vim normal mode" \
+        "press l (hangul position)" \
+        "cursor moves right" 8 $total
 
-    run_test "/ → 검색" \
-        "vim, less, 또는 man 페이지" \
-        "한글 상태에서 / 누르기" \
-        "검색 프롬프트가 뜸" 9 $total
+    run_test "/ -> search" \
+        "in less or vim" \
+        "press /" \
+        "search prompt appears" 9 $total
 
-    run_test ". → 명령 반복" \
-        "vim에서 dd로 줄 삭제 후" \
-        "한글 상태에서 . 누르기" \
-        "마지막 명령이 반복됨 (줄 삭제)" 10 $total
+    run_test ". -> repeat (vim)" \
+        "vim: dd to delete line first" \
+        "press ." \
+        "last command repeated (line deleted)" 10 $total
 }
 
 run_phase_3() {
     local total=6
-    phase_header "Phase 3" "단독 키 — Shift 조합"
+    phase_header "Phase 3" "Standalone keys (Shift combos)"
 
-    run_test "G (Shift+g) → 파일 끝" \
-        "vim에서 파일 열기" \
-        "한글 상태에서 Shift+G" \
-        "파일 맨 끝으로 이동" 1 $total
+    echo -e "  ${DIM}Test in vim: vim /tmp/test-kr.txt${NC}"
+    echo ""
 
-    run_test "gg → 파일 처음" \
-        "vim에서 파일 끝에 있는 상태" \
-        "한글 상태에서 g를 두 번" \
-        "파일 맨 처음으로 이동" 2 $total
+    run_test "G (Shift+g) -> file end" \
+        "open file in vim" \
+        "Shift+G" \
+        "cursor jumps to last line" 1 $total
 
-    run_test "A (Shift+a) → 줄 끝 삽입" \
-        "vim에서 normal mode" \
-        "한글 상태에서 Shift+A" \
-        "줄 끝에서 insert mode 진입" 3 $total
+    run_test "gg -> file start" \
+        "at end of file" \
+        "press g twice" \
+        "cursor jumps to first line" 2 $total
 
-    run_test "O (Shift+o) → 위에 줄 삽입" \
-        "vim에서 normal mode" \
-        "한글 상태에서 Shift+O" \
-        "현재 줄 위에 새 줄이 열리고 insert mode" 4 $total
+    run_test "A (Shift+a) -> append EOL" \
+        "vim normal mode" \
+        "Shift+A" \
+        "insert mode at end of line" 3 $total
 
-    run_test "dd → 줄 삭제" \
-        "vim에서 normal mode" \
-        "한글 상태에서 d를 두 번" \
-        "현재 줄이 삭제됨" 5 $total
+    run_test "O (Shift+o) -> open above" \
+        "ESC to normal mode" \
+        "Shift+O" \
+        "new line above, insert mode" 4 $total
 
-    run_test ":wq → 저장 종료" \
-        "vim에서 normal mode" \
-        "한글 상태에서 :wq Enter" \
-        "파일이 저장���고 vim 종료" 6 $total
+    run_test "dd -> delete line" \
+        "ESC to normal mode" \
+        "press d twice" \
+        "current line deleted" 5 $total
+
+    run_test ":wq -> save quit" \
+        "ESC to normal mode" \
+        "type :wq Enter" \
+        "file saved, vim exits" 6 $total
 }
 
 run_phase_4() {
     local total=5
-    phase_header "Phase 4" "tmux 단축키"
+    phase_header "Phase 4" "tmux shortcuts"
 
     run_test "Ctrl+B (tmux prefix)" \
-        "tmux 세션 안에서" \
-        "한글 상태에서 Ctrl+B" \
-        "tmux가 prefix 입력 대기 상태가 됨" 1 $total
+        "inside tmux session" \
+        "Ctrl+B" \
+        "tmux waits for next key" 1 $total
 
-    run_test "Ctrl+B, c → 새 창" \
-        "tmux prefix 입력 후" \
-        "한글 상태에서 c (ㅊ 위치)" \
-        "새 tmux 창이 생성됨" 2 $total
+    run_test "Ctrl+B, c -> new window" \
+        "after tmux prefix" \
+        "press c" \
+        "new tmux window created" 2 $total
 
-    run_test "Ctrl+B, n → 다음 창" \
-        "tmux 창이 2개 이상인 상태" \
-        "한글 상태에서 Ctrl+B 후 n" \
-        "다음 창으로 전환" 3 $total
+    run_test "Ctrl+B, n -> next window" \
+        "2+ tmux windows" \
+        "Ctrl+B then n" \
+        "switches to next window" 3 $total
 
-    run_test "Ctrl+B, d → detach" \
-        "tmux 세션 안에서" \
-        "한글 상태에서 Ctrl+B 후 d" \
-        "tmux에서 detach됨" 4 $total
+    run_test "Ctrl+B, d -> detach" \
+        "inside tmux session" \
+        "Ctrl+B then d" \
+        "detached from tmux" 4 $total
 
-    run_test "Ctrl+B, [ → 복사 모드" \
-        "tmux 세션 안에서" \
-        "한글 상태에서 Ctrl+B 후 [" \
-        "tmux 복사 모드 진입" 5 $total
+    run_test "Ctrl+B, [ -> copy mode" \
+        "inside tmux session" \
+        "Ctrl+B then [" \
+        "copy mode entered" 5 $total
 }
 
 run_phase_5() {
     local total=6
-    phase_header "Phase 5" "한글 입력 정상성"
+    phase_header "Phase 5" "Hangul input integrity"
 
-    run_test "기본 한글 조합" \
+    run_test "Basic hangul composition" \
         "" \
-        "한글 상태에서 '한글테스트' 타이핑" \
-        "ㅎ+ㅏ+ㄴ=한, ㄱ+ㅡ+ㄹ=글 정상 조합" 1 $total
+        "type hangul chars normally" \
+        "composition works (jamo -> syllable)" 1 $total
 
-    run_test "조합 중 Ctrl+키" \
-        "'테스' 까지 타이핑 (ㅌㅔㅅ 조합 중)" \
-        "조합 도중 Ctrl+C" \
-        "조합이 끊기고 Ctrl+C가 실행됨" 2 $total
+    run_test "Ctrl+key during composition" \
+        "start typing a hangul syllable (partial)" \
+        "press Ctrl+C mid-composition" \
+        "composition cancelled, Ctrl+C executed" 2 $total
 
-    run_test "Ctrl+키 후 한글 유지" \
+    run_test "Hangul preserved after Ctrl+key" \
         "" \
-        "Ctrl+L (클리어) 후 바로 한글 타이핑" \
-        "한글 모드가 유지됨 (영문으로 바뀌지 않음)" 3 $total
+        "Ctrl+L then type hangul" \
+        "still in hangul mode (not switched to english)" 3 $total
 
-    run_test "Ctrl+키 연타 후 한글 유지" \
+    run_test "Rapid Ctrl+key sequence" \
         "" \
-        "Ctrl+A → Ctrl+E → Ctrl+K 빠르게 연타 후 한글 타이핑" \
-        "한글 모드가 여전히 유지됨" 4 $total
+        "Ctrl+A -> Ctrl+E -> Ctrl+K rapidly, then type hangul" \
+        "hangul mode still active" 4 $total
 
-    run_test "빠른 타이핑 중 키 누락" \
+    run_test "Fast hangul typing" \
         "" \
-        "빠르게 '한글입력테스트문장입니다' 타이핑" \
-        "누락이나 깨짐 없이 정상 입력" 5 $total
+        "type a long hangul sentence quickly" \
+        "no missing chars or broken composition" 5 $total
 
-    run_test "영문 전환 후 복귀" \
+    run_test "Toggle then Ctrl+key" \
         "" \
-        "한/영 전환 → 영문 타이핑 → 한/영 전환 → Ctrl+W" \
-        "한영 전환 후에도 규칙이 정상 동작" 6 $total
+        "switch to EN -> type -> switch to KR -> Ctrl+W" \
+        "Ctrl+W works after language toggle" 6 $total
 }
 
 run_phase_6() {
     local total=5
-    phase_header "Phase 6" "다른 앱 영향"
+    phase_header "Phase 6" "Side effects"
 
-    run_test "Safari/Chrome: Cmd+C/V" \
-        "브라우저에서 텍스트 선택" \
-        "한글 상태에서 Cmd+C 후 Cmd+V" \
-        "복사/붙여넣기 정상 (--with-meta 설치 시)" 1 $total
+    run_test "Cmd+C/V in browser" \
+        "select text in Safari/Chrome" \
+        "Cmd+C then Cmd+V in hangul mode" \
+        "copy/paste works (if --with-meta installed)" 1 $total
 
     run_test "Spotlight (Cmd+Space)" \
         "" \
-        "한글 상태에서 Cmd+Space" \
-        "Spotlight 검색이 뜸" 2 $total
+        "Cmd+Space in hangul mode" \
+        "Spotlight opens" 2 $total
 
-    run_test "한/영 전환키" \
+    run_test "Language toggle key" \
         "" \
-        "한/영 전환키 누르기" \
-        "입력 소스가 정상 전환됨" 3 $total
+        "press your KR/EN toggle key" \
+        "input source switches normally" 3 $total
 
-    run_test "Option+알파벳 (특수문자)" \
-        "터미널에서" \
-        "한글 상태에서 Option+키 조합" \
-        "Karabiner 규칙 영향 없이 기본 동작" 4 $total
+    run_test "Option+key (special chars)" \
+        "in terminal" \
+        "Option+any key in hangul mode" \
+        "no interference from Karabiner rules" 4 $total
 
-    run_test "다른 Karabiner 규칙 공존" \
-        "기존에 설정한 Karabiner 규칙이 있다면" \
-        "기존 규칙 동작 확인" \
-        "Korean Shortcuts가 기존 규칙을 방해하지 않음" 5 $total
+    run_test "Other Karabiner rules coexist" \
+        "if you have other Karabiner rules" \
+        "test your existing rules" \
+        "Korean Shortcuts does not break them" 5 $total
 }
 
 # ── 리포트 생성 ──────────────────────────────────────────────────
